@@ -1,0 +1,29 @@
+<table *ngIf="users.length > 0" class="table">
+  <thead>
+    <tr>
+      <th>User Name</th>
+      <th>Gender</th>
+      <th>Birthday</th>
+      <th>Learning Course</th>
+      <th>Learning Start Date</th>
+      <th>Learning End Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of users">
+      <td>{{ user.name }}</td>
+      <td>{{ user.gender }}</td>
+      <td>{{ user.birthday | date: "dd/MM/yyyy" }}</td>
+      <td>{{ user.course }}</td>
+      <td>{{ user.learningStartDate | date: "dd/MM/yyyy" }}</td>
+      <td>{{ user.learningEndDate | date: "dd/MM/yyyy" }}</td>
+      <td class="actions">
+        <button kendoButton (click)="editUser(user)">Edit</button>
+        <button kendoButton [primary]="true" (click)="removeUser(user)">
+          Remove
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

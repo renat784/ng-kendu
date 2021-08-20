@@ -1,0 +1,118 @@
+<form [formGroup]="form">
+  <kendo-dialog
+    *ngIf="opened"
+    (close)="modalClosed('cancel')"
+    [minWidth]="250"
+    [width]="450"
+  >
+    <div class="form-group">
+      <h3 class="text-center">Add new User</h3>
+      <p>
+        <kendo-label [for]="name" text="User name"></kendo-label>
+      </p>
+      <kendo-textbox
+        formControlName="name"
+        [clearButton]="true"
+        #name
+        placeholder="Your name"
+      ></kendo-textbox>
+      <kendo-formerror *ngIf="hasErrors('name')"
+        >Name should be 5-15 characters long
+      </kendo-formerror>
+    </div>
+
+    <div class="form-group">
+      <p>Gender</p>
+      <kendo-multiselect
+        [maxlength]="1"
+        formControlName="gender"
+        [data]="listOfGenders"
+        textField="text"
+        valueField="value"
+        placeholder="Your gender"
+      ></kendo-multiselect>
+      <kendo-formerror *ngIf="hasErrors('gender')"
+        >Choose your gender</kendo-formerror
+      >
+    </div>
+
+    <div class="form-group">
+      <p>Select your birthday:</p>
+      <kendo-datepicker
+        format="dd/MM/yyyy"
+        formControlName="birthday"
+        placeholder="Your birthday"
+        #birthday
+        required
+        [max]="learningStartDate.value && learningEndDate.value"
+      ></kendo-datepicker>
+      <kendo-formerror *ngIf="hasErrors('birthday')"
+        >Choose your birthday</kendo-formerror
+      >
+    </div>
+
+    <div class="form-group">
+      <p>Learning course</p>
+      <kendo-multiselect
+        [data]="listOfCourses"
+        [maxlength]="1"
+        textField="text"
+        valueField="value"
+        formControlName="course"
+        placeholder="Your course"
+        #course
+      ></kendo-multiselect>
+      <kendo-formerror *ngIf="hasErrors('course')"
+        >Choose course</kendo-formerror
+      >
+    </div>
+
+    <div class="form-group">
+      <p>Select a Learning start date:</p>
+      <kendo-datepicker
+        format="dd/MM/yyyy"
+        formControlName="learningStartDate"
+        placeholder="Your start date"
+        #learningStartDate
+        [min]="birthday.value"
+        [max]="learningEndDate.value"
+        required
+      ></kendo-datepicker>
+      <kendo-formerror *ngIf="hasErrors('learningStartDate')"
+        >Choose your learning start date</kendo-formerror
+      >
+    </div>
+
+    <div class="form-group">
+      <p>Select a Learning end date:</p>
+      <kendo-datepicker
+        format="dd/MM/yyyy"
+        [min]="learningStartDate.value && birthday.value"
+        [required]="
+          course.value[0]?.text != 'Frontend' &&
+          course.value[0]?.text != 'Backend'
+        "
+        formControlName="learningEndDate"
+        placeholder="Your end date"
+        #learningEndDate
+      ></kendo-datepicker>
+      <kendo-formerror *ngIf="hasErrors('learningEndDate')"
+        >Choose your learning end date</kendo-formerror
+      >
+    </div>
+
+    <kendo-dialog-actions>
+      <button kendoButton (click)="modalClosed('cancel')">Cancel</button>
+      <button
+        type="submit"
+        kendoButton
+        (click)="submit()"
+        [primary]="true"
+        [disabled]="!form.valid"
+      >
+        <span *ngIf="!updateUser">Add</span>
+        <span *ngIf="updateUser">Update</span>
+      </button>
+    </kendo-dialog-actions>
+  </kendo-dialog>
+</form>
