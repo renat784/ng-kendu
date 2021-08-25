@@ -11,18 +11,21 @@ import { userSelector } from 'src/app/store/selectors/user.selectors';
   styleUrls: ['./table.component.scss'],
 })
 export class TableComponent {
-  @Output() updateUser = new EventEmitter<User>();
+  @Output() updateUser = new EventEmitter<{ user: User; resetForm: boolean }>();
   users: User[] = [];
+  resetForm = true;
 
   constructor(private store: Store<RootState>) {
     store.select(userSelector).subscribe((i) => (this.users = i));
   }
 
-  editUser(user: User) {
-    this.updateUser.emit(user);
+  editUser(data: any) {
+    this.resetForm = false;
+    this.updateUser.emit({ user: data, resetForm: this.resetForm });
   }
 
-  removeUser(user: User) {
+  removeUser(data: any) {
+    const user = data;
     this.store.dispatch(new UserDeleteAction(user));
   }
 }

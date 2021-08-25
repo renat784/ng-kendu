@@ -5,7 +5,7 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { Course } from 'src/app/models/course.model';
@@ -18,6 +18,8 @@ import {
 } from 'src/app/store/actions/user.actions';
 import { RootState } from 'src/app/store/models/user.store.models';
 import { userSelector } from 'src/app/store/selectors/user.selectors';
+import { customValidator } from 'src/app/validators/custom.validator';
+import { userExistsValidator } from 'src/app/validators/unique.validator';
 
 @Component({
   selector: 'app-modal',
@@ -25,9 +27,11 @@ import { userSelector } from 'src/app/store/selectors/user.selectors';
   styleUrls: ['./modal.component.scss'],
 })
 export class ModalComponent {
-  @Input() opened: boolean = false;
   @Output() close = new EventEmitter<string>();
+  @Input() opened = false;
   @Input() userToEdit = null;
+  @Input() resetForm = false;
+
   updateUser = false;
   oldUserName = '';
   users$: Observable<User[]>;
@@ -53,51 +57,63 @@ export class ModalComponent {
     private store: Store<RootState>,
     private service: UserService
   ) {
-    this.form = builder.group({
-      name: [
-        '',
-        Validators.compose([
-          Validators.minLength(5),
-          Validators.maxLength(15),
-          Validators.required,
-        ]),
-      ],
-      gender: ['', Validators.required],
-      birthday: ['', Validators.required],
-      course: ['', Validators.required],
-      learningStartDate: ['', Validators.required],
-      learningEndDate: [''],
-    });
+    this.form = builder.group(
+      {
+        name: ['', [userExistsValidator(service)]],
+        gender: [''],
+        birthday: [''],
+        course: [''],
+        learningStartDate: [''],
+        learningEndDate: [''],
+      },
+      {
+        validators: [customValidator()],
+      }
+    );
 
     this.users$ = store.select(userSelector);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.userToEdit && changes.userToEdit.currentValue) {
-      const user = changes.userToEdit.currentValue;
-      this.oldUserName = user.name;
+    if (this.resetForm) {
+      this.form.reset();
+      this.updateUser = false;
+      return;
+    }
 
-      this.form.controls['name'].setValue(user.name);
-      this.form.controls['birthday'].setValue(new Date(user.birthday));
-      this.form.controls['learningStartDate'].setValue(
-        new Date(user.learningStartDate)
+    let user = null;
+
+    if (this.userToEdit) {
+      user = this.userToEdit;
+      this.setForm(user);
+    } else if (changes.userToEdit && changes.userToEdit.currentValue) {
+      user = changes.userToEdit.currentValue;
+      this.setForm(user);
+    }
+
+    this.oldUserName = user?.name;
+    this.updateUser = true;
+  }
+
+  setForm(user: any) {
+    this.form.controls['name'].setValue(user.name);
+    this.form.controls['birthday'].setValue(new Date(user.birthday));
+    this.form.controls['learningStartDate'].setValue(
+      new Date(user.learningStartDate)
+    );
+
+    if (user.learningEndDate)
+      this.form.controls['learningEndDate'].setValue(
+        new Date(user.learningEndDate)
       );
 
-      if (user.learningEndDate)
-        this.form.controls['learningEndDate'].setValue(
-          new Date(user.learningEndDate)
-        );
+    this.form.controls['gender'].setValue([
+      this.listOfGenders.find((i) => i.text == user.gender),
+    ]);
 
-      this.form.controls['gender'].setValue([
-        this.listOfGenders.find((i) => i.text == user.gender),
-      ]);
-
-      this.form.controls['course'].setValue([
-        this.listOfCourses.find((i) => i.text == user.course),
-      ]);
-
-      this.updateUser = true;
-    }
+    this.form.controls['course'].setValue([
+      this.listOfCourses.find((i) => i.text == user.course),
+    ]);
   }
 
   hasErrors(controlName: string) {

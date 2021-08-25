@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { User } from './models/user.model';
 
 @Component({
   selector: 'app-root',
@@ -9,14 +8,21 @@ import { User } from './models/user.model';
 export class AppComponent {
   public opened = false;
   public user: any;
+  public resetForm = false;
 
   public close(status: string) {
     this.opened = false;
   }
 
-  updateUser(user: User) {
+  updateUser(data: any) {
     this.opened = true;
-    this.user = user;
+    this.user = data.user;
+    this.resetForm = data.resetForm;
+  }
+
+  addUser() {
+    this.resetForm = true;
+    this.open();
   }
 
   public open() {

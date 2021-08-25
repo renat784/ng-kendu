@@ -43,11 +43,10 @@
         formControlName="birthday"
         placeholder="Your birthday"
         #birthday
-        required
-        [max]="learningStartDate.value && learningEndDate.value"
       ></kendo-datepicker>
       <kendo-formerror *ngIf="hasErrors('birthday')"
-        >Choose your birthday</kendo-formerror
+        >Your birthday should be before start/end day to
+        courses</kendo-formerror
       >
     </div>
 
@@ -63,7 +62,7 @@
         #course
       ></kendo-multiselect>
       <kendo-formerror *ngIf="hasErrors('course')"
-        >Choose course</kendo-formerror
+        >Choose the course</kendo-formerror
       >
     </div>
 
@@ -74,31 +73,25 @@
         formControlName="learningStartDate"
         placeholder="Your start date"
         #learningStartDate
-        [min]="birthday.value"
-        [max]="learningEndDate.value"
-        required
       ></kendo-datepicker>
+
       <kendo-formerror *ngIf="hasErrors('learningStartDate')"
-        >Choose your learning start date</kendo-formerror
-      >
+        >Start learning day should be before End Day
+      </kendo-formerror>
     </div>
 
     <div class="form-group">
       <p>Select a Learning end date:</p>
       <kendo-datepicker
         format="dd/MM/yyyy"
-        [min]="learningStartDate.value && birthday.value"
-        [required]="
-          course.value[0]?.text != 'Frontend' &&
-          course.value[0]?.text != 'Backend'
-        "
         formControlName="learningEndDate"
         placeholder="Your end date"
         #learningEndDate
       ></kendo-datepicker>
+
       <kendo-formerror *ngIf="hasErrors('learningEndDate')"
-        >Choose your learning end date</kendo-formerror
-      >
+        >End learning day should be after Start Day
+      </kendo-formerror>
     </div>
 
     <kendo-dialog-actions>

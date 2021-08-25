@@ -1,6 +1,6 @@
 <div class="container p-2">
   <div>
-    <button class="mb-2" kendoButton (click)="open()" [primary]="true">
+    <button class="mb-2" kendoButton (click)="addUser()" [primary]="true">
       Add user
     </button>
     <app-table (updateUser)="updateUser($event)"></app-table>
@@ -10,6 +10,7 @@
     <app-modal
       [userToEdit]="user"
       [opened]="opened"
+      [resetForm]="resetForm"
       (close)="close($event)"
     ></app-modal>
   </div>

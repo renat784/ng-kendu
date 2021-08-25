@@ -20,6 +20,8 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from 'src/environments/environment';
 import { UserReducer } from './store/reducers/user.reducer';
 import { RootState } from './store/models/user.store.models';
+import { GridModule } from '@progress/kendo-angular-grid';
+import { UserService } from './services/user.service';
 
 const reducers = {
   user: UserReducer,
@@ -46,8 +48,9 @@ const reducers = {
       maxAge: 25,
       logOnly: environment.production,
     }),
+    GridModule,
   ],
-  providers: [],
+  providers: [UserService],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

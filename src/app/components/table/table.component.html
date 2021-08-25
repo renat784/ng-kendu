@@ -1,29 +1,28 @@
-<table *ngIf="users.length > 0" class="table">
-  <thead>
-    <tr>
-      <th>User Name</th>
-      <th>Gender</th>
-      <th>Birthday</th>
-      <th>Learning Course</th>
-      <th>Learning Start Date</th>
-      <th>Learning End Date</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let user of users">
-      <td>{{ user.name }}</td>
-      <td>{{ user.gender }}</td>
-      <td>{{ user.birthday | date: "dd/MM/yyyy" }}</td>
-      <td>{{ user.course }}</td>
-      <td>{{ user.learningStartDate | date: "dd/MM/yyyy" }}</td>
-      <td>{{ user.learningEndDate | date: "dd/MM/yyyy" }}</td>
-      <td class="actions">
-        <button kendoButton (click)="editUser(user)">Edit</button>
-        <button kendoButton [primary]="true" (click)="removeUser(user)">
-          Remove
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+<kendo-grid *ngIf="users.length > 0" [data]="users" [height]="400">
+  <kendo-grid-column field="name" title="User Name"> </kendo-grid-column>
+  <kendo-grid-column field="gender" title="Gender"> </kendo-grid-column>
+  <kendo-grid-column field="birthday" format="dd/MM/yyyy" title="Birthday">
+  </kendo-grid-column>
+  <kendo-grid-column field="course" title="Learning Course">
+  </kendo-grid-column>
+  <kendo-grid-column
+    field="learningStartDate"
+    format="dd/MM/yyyy"
+    title="Learning Start Date"
+  >
+  </kendo-grid-column>
+  <kendo-grid-column
+    field="learningEndDate"
+    format="dd/MM/yyyy"
+    title="Learning End Date"
+  >
+  </kendo-grid-column>
+  <kendo-grid-column title="Actions" field="name">
+    <ng-template kendoGridCellTemplate let-dataItem>
+      <button kendoButton (click)="editUser(dataItem)">Edit</button>
+      <button kendoButton [primary]="true" (click)="removeUser(dataItem)">
+        Remove
+      </button>
+    </ng-template>
+  </kendo-grid-column>
+</kendo-grid>
