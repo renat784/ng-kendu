@@ -84,8 +84,10 @@ export function customValidator(): ValidatorFn {
     let learningEndDateError = false;
 
     if (course && (course.value == 'backend' || course.value == 'frontend')) {
+      learningEndDateControl.disable({ onlySelf: true });
       learningEndDateError = false;
     } else {
+      learningEndDateControl.enable({ onlySelf: true });
       learningEndDateError =
         new Date(learningEnd) <= new Date(birthday) ||
         new Date(learningEnd) <= new Date(learningStart) ||
